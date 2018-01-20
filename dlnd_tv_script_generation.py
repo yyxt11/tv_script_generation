@@ -6,7 +6,7 @@
 # ## Get the Data
 # The data is already provided for you.  You'll be using a subset of the original dataset.  It consists of only the scenes in Moe's Tavern.  This doesn't include other versions of the tavern, like "Moe's Cavern", "Flaming Moe's", "Uncle Moe's Family Feed-Bag", etc..
 
-# In[97]:
+# In[2]:
 
 
 """
@@ -23,7 +23,7 @@ text = text[81:]
 # ## Explore the Data
 # Play around with `view_sentence_range` to view different parts of the data.
 
-# In[98]:
+# In[3]:
 
 
 view_sentence_range = (0, 10)
@@ -62,7 +62,7 @@ print('\n'.join(text.split('\n')[view_sentence_range[0]:view_sentence_range[1]])
 # 
 # Return these dictionaries in the following tuple `(vocab_to_int, int_to_vocab)`
 
-# In[99]:
+# In[4]:
 
 
 import numpy as np
@@ -110,7 +110,7 @@ tests.test_create_lookup_tables(create_lookup_tables)
 # 
 # This dictionary will be used to token the symbols and add the delimiter (space) around it.  This separates the symbols as it's own word, making it easier for the neural network to predict on the next word. Make sure you don't use a token that could be confused as a word. Instead of using the token "dash", try using something like "||dash||".
 
-# In[100]:
+# In[5]:
 
 
 def token_lookup():
@@ -141,7 +141,7 @@ tests.test_tokenize(token_lookup)
 # ## Preprocess all the data and save it
 # Running the code cell below will preprocess all the data and save it to file.
 
-# In[101]:
+# In[6]:
 
 
 """
@@ -155,7 +155,7 @@ helper.preprocess_and_save_data(data_dir, token_lookup, create_lookup_tables)
 # # Check Point
 # This is your first checkpoint. If you ever decide to come back to this notebook or have to restart the notebook, you can start from here. The preprocessed data has been saved to disk.
 
-# In[102]:
+# In[7]:
 
 
 """
@@ -179,7 +179,7 @@ int_text, vocab_to_int, int_to_vocab, token_dict = helper.load_preprocess()
 # 
 # ### Check the Version of TensorFlow and Access to GPU
 
-# In[103]:
+# In[8]:
 
 
 """
@@ -208,7 +208,7 @@ else:
 # 
 # Return the placeholders in the following tuple `(Input, Targets, LearningRate)`
 
-# In[104]:
+# In[9]:
 
 
 def get_inputs():
@@ -237,7 +237,7 @@ tests.test_get_inputs(get_inputs)
 # 
 # Return the cell and initial state in the following tuple `(Cell, InitialState)`
 
-# In[114]:
+# In[10]:
 
 
 def get_init_cell(batch_size, rnn_size):
@@ -265,7 +265,7 @@ tests.test_get_init_cell(get_init_cell)
 # ### Word Embedding
 # Apply embedding to `input_data` using TensorFlow.  Return the embedded sequence.
 
-# In[121]:
+# In[11]:
 
 
 def get_embed(input_data, vocab_size, embed_dim):
@@ -295,7 +295,7 @@ tests.test_get_embed(get_embed)
 # 
 # Return the outputs and final_state state in the following tuple `(Outputs, FinalState)` 
 
-# In[107]:
+# In[12]:
 
 
 def build_rnn(cell, inputs):
@@ -325,7 +325,7 @@ tests.test_build_rnn(build_rnn)
 # 
 # Return the logits and final state in the following tuple (Logits, FinalState) 
 
-# In[108]:
+# In[13]:
 
 
 def build_nn(cell, rnn_size, input_data, vocab_size, embed_dim):
@@ -391,7 +391,7 @@ tests.test_build_nn(build_nn)
 # ]
 # ```
 
-# In[109]:
+# In[14]:
 
 
 def get_batches(int_text, batch_size, seq_length):
@@ -456,19 +456,19 @@ tests.test_get_batches(get_batches)
 # - Set `learning_rate` to the learning rate.
 # - Set `show_every_n_batches` to the number of batches the neural network should print progress.
 
-# In[122]:
+# In[42]:
 
 
 # Number of Epochs
-num_epochs = 50
+num_epochs = 400
 # Batch Size
-batch_size = 256
+batch_size = 512
 # RNN Size
 rnn_size = 512
 # Embedding Dimension Size
-embed_dim = 128
+embed_dim = 256
 # Sequence Length
-seq_length = 10
+seq_length = 20
 # Learning Rate
 learning_rate = 0.01
 # Show stats for every n number of batches
@@ -483,7 +483,7 @@ save_dir = './save'
 # ### Build the Graph
 # Build the graph using the neural network you implemented.
 
-# In[123]:
+# In[43]:
 
 
 """
@@ -520,7 +520,7 @@ with train_graph.as_default():
 # ## Train
 # Train the neural network on the preprocessed data.  If you have a hard time getting a good loss, check the [forms](https://discussions.udacity.com/) to see if anyone is having the same problem.
 
-# In[124]:
+# In[44]:
 
 
 """
@@ -559,7 +559,7 @@ with tf.Session(graph=train_graph) as sess:
 # ## Save Parameters
 # Save `seq_length` and `save_dir` for generating a new TV script.
 
-# In[133]:
+# In[45]:
 
 
 """
@@ -571,7 +571,7 @@ helper.save_params((seq_length, save_dir))
 
 # # Checkpoint
 
-# In[132]:
+# In[46]:
 
 
 """
@@ -596,7 +596,7 @@ seq_length, load_dir = helper.load_params()
 # 
 # Return the tensors in the following tuple `(InputTensor, InitialStateTensor, FinalStateTensor, ProbsTensor)` 
 
-# In[136]:
+# In[47]:
 
 
 def get_tensors(loaded_graph):
@@ -622,7 +622,7 @@ tests.test_get_tensors(get_tensors)
 # ### Choose Word
 # Implement the `pick_word()` function to select the next word using `probabilities`.
 
-# In[137]:
+# In[58]:
 
 
 def pick_word(probabilities, int_to_vocab):
@@ -645,7 +645,7 @@ tests.test_pick_word(pick_word)
 # ## Generate TV Script
 # This will generate the TV script for you.  Set `gen_length` to the length of TV script you want to generate.
 
-# In[138]:
+# In[59]:
 
 
 gen_length = 200
@@ -698,3 +698,9 @@ with tf.Session(graph=loaded_graph) as sess:
 # It's ok if the TV script doesn't make any sense.  We trained on less than a megabyte of text.  In order to get good results, you'll have to use a smaller vocabulary or get more data.  Luckly there's more data!  As we mentioned in the begging of this project, this is a subset of [another dataset](https://www.kaggle.com/wcukierski/the-simpsons-by-the-data).  We didn't have you train on all the data, because that would take too long.  However, you are free to train your neural network on all the data.  After you complete the project, of course.
 # # Submitting This Project
 # When submitting this project, make sure to run all the cells before saving the notebook. Save the notebook file as "dlnd_tv_script_generation.ipynb" and save it as a HTML file under "File" -> "Download as". Include the "helper.py" and "problem_unittests.py" files in your submission.
+
+# In[ ]:
+
+
+
+
